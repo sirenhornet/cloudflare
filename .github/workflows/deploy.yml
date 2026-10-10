@@ -1,0 +1,23 @@
+name: deploy
+
+on:
+  schedule:
+    - cron: '33 19 * * *'
+  workflow_dispatch:
+
+jobs:
+  say-hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v7
+      - name: deploy
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          bash ./deploy.sh
+      - name: ntfy
+        run: |
+          echo "Cloudflare deploy"
+          curl -sd "Cloudflare deploy" https://ntfy.sh/sirenhornet/cloudflare
